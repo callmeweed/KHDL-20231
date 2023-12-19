@@ -3,22 +3,8 @@
 create schema movie;
 
 CREATE TABLE movie.movie_raw (
-    imdb_id text,
-    director text,
-    writers text,
-    stars text,
-    summary text,
-    release_date text,
-    country_of_origin text,
-    production_companies text,
-    languages text,
-    tconst text,
-    originalTitle text,
-    startYear text,
-    runtimeMinutes text,
-    genres text,
-    revenue numeric,
-    budget numeric
+    unique_id int,
+    data_raw text
 );
 
 CREATE TABLE movie.movie (
