@@ -7,6 +7,8 @@ import os
 
 #------------------------------------------------------------
 PATH_PROCESSED = './proccessed/'
+os.makedirs(PATH_PROCESSED, exist_ok=True)
+
 def load_jsonl_to_dataframe(file_path):
     data = []
     with open(file_path, 'r', encoding='utf-8') as file:
@@ -110,7 +112,6 @@ df_movie_genre = df_processed[['imdb_id', 'genres']].explode('genres')
 
 #-------------------save processed data-----------------------------
 
-os.makedirs(PATH_PROCESSED, exist_ok=True)
 
 df_processed.to_csv(PATH_PROCESSED + 'movie.csv')
 df_movie_director.to_csv(PATH_PROCESSED + 'movie_director.csv')
