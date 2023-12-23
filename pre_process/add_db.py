@@ -3,8 +3,10 @@ import os, json
 from mongo_config import USERNAME, PASSWORD
 from pymongo import MongoClient
 
-MONGO_URI = f"mongodb+srv://{USERNAME}:{PASSWORD}@cluster0.umr51rf.mongodb.net/"
-DATABASE_NAME = "MOVIE"
+# MONGO_URI = f"mongodb+srv://{USERNAME}:{PASSWORD}@cluster0.umr51rf.mongodb.net/"
+
+MONGO_URI = f"mongodb://localhost:27017"
+DATABASE_NAME = "KHDL-MOVIE"
 
 def insert_data_csv(collection_name, csv_path, id_unique = 'id'):
     client = MongoClient(MONGO_URI)
@@ -55,5 +57,16 @@ def insert_data_json(collection_name, csv_path, id_unique = 'id'):
     # Đóng kết nối MongoDB
     client.close()
 
-# insert_data_csv('movie_company', 'proccessed/movie_company.csv', id_unique = 'unique_id')
-insert_data_json('genre', 'proccessed/genre.json', id_unique = 'id')
+
+ls_processed_data = os.listdir('./proccessed')
+for path in ls_processed_data:
+    if '.json' in path:
+        name, _ = os.path.splitext(path)
+        insert_data_json(name, f'proccessed/{path}', id_unique = 'id')
+
+for path in ls_processed_data:
+    if '.csv' in path:
+        name, _ = os.path.splitext(path)
+        insert_data_csv(name, f'proccessed/{path}', id_unique = 'unique_id')
+
+
