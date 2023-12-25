@@ -1,9 +1,9 @@
 import json
 import numpy as np # linear algebra
 import pandas as pd # data processing, CSV file I/O (e.g. pd.read_csv)
-from ast import literal_eval
 import os
 
+from database import append_data_json, append_data_csv
 
 #------------------------------------------------------------
 PATH_PROCESSED = './proccessed/'
@@ -121,3 +121,16 @@ df_movie_country.to_csv(PATH_PROCESSED + 'movie_country.csv')
 df_movie_company.to_csv(PATH_PROCESSED + 'movie_company.csv')
 df_movie_language.to_csv(PATH_PROCESSED + 'movie_language.csv')
 df_movie_genre.to_csv(PATH_PROCESSED + 'movie_genre.csv')
+
+#-------------------save db-----------------------------
+
+ls_processed_data = os.listdir('./proccessed')
+for path in ls_processed_data:
+    if '.json' in path:
+        name, _ = os.path.splitext(path)
+        append_data_json(name, f'proccessed/{path}', id_unique = 'id')
+
+for path in ls_processed_data:
+    if '.csv' in path:
+        name, _ = os.path.splitext(path)
+        append_data_csv(name, f'proccessed/{path}', id_unique = 'unique_id')

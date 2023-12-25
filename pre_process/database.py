@@ -1,13 +1,9 @@
 import pandas as pd
-import os, json
-from mongo_config import USERNAME, PASSWORD
+import json
+from mongo_config import DATABASE_NAME, MONGO_URI
 from pymongo import MongoClient
 
-# MONGO_URI = f"mongodb+srv://{USERNAME}:{PASSWORD}@cluster0.umr51rf.mongodb.net/"
 
-MONGO_URI = f"mongodb://localhost:27017"
-# DATABASE_NAME = "KHDL-MOVIE"
-DATABASE_NAME = "KHDL-MOVIE-PROCCESSING"
 
 def insert_data_csv(collection_name, csv_path, id_unique = 'id'):
     client = MongoClient(MONGO_URI)
@@ -88,15 +84,15 @@ def append_data_json(collection_name, csv_path, id_unique = 'id'):
     client.close()
     print(f"Data {csv_path} has been successfully inserted or updated in MongoDB Atlas.")
 
-ls_processed_data = os.listdir('./proccessed')
-for path in ls_processed_data:
-    if '.json' in path:
-        name, _ = os.path.splitext(path)
-        append_data_json(name, f'proccessed/{path}', id_unique = 'id')
-
-for path in ls_processed_data:
-    if '.csv' in path:
-        name, _ = os.path.splitext(path)
-        append_data_csv(name, f'proccessed/{path}', id_unique = 'unique_id')
+# ls_processed_data = os.listdir('./proccessed')
+# for path in ls_processed_data:
+#     if '.json' in path:
+#         name, _ = os.path.splitext(path)
+#         append_data_json(name, f'proccessed/{path}', id_unique = 'id')
+#
+# for path in ls_processed_data:
+#     if '.csv' in path:
+#         name, _ = os.path.splitext(path)
+#         append_data_csv(name, f'proccessed/{path}', id_unique = 'unique_id')
 
 
