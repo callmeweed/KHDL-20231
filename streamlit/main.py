@@ -283,7 +283,7 @@ with col1:
 with col2:
     st.write("Top 5 phim có doanh thu cao nhất")
     st.write(top5_revenue[['originalTitle', 'revenue']])
-    st.write("Top 5 diễn viên có doanh thu cao nhất")
+    st.write("Top 5 đạo diễn có doanh thu cao nhất")
     fig_dir, ax_dir = plt.subplots()
     ax_dir.barh(top5_director_revenue['name'], top5_director_revenue['sum_of_revenue'],
             label='Revenue', color='blue', height=0.5, align='center')
