@@ -18,13 +18,13 @@ def create_data():
 
     # Chọn collection trong database
     collection = database["movie"]
-    projection = {"imdb_id": 1, "release_date": 1, "originalTitle": 1, "summary": 1, "runtimeMinutes":1, "revenue":1, "budget":1, "_id": 0}
+    projection = {"imdb_id": 1, "release_date": 1, "originalTitle": 1, "summary": 1, "runtimeMinutes": 1, "revenue": 1,
+                  "budget": 1, "_id": 0}
     # Đọc dữ liệu từ collection thành một list of dictionaries
     df = list(collection.find({}, projection))
     # Tạo DataFrame từ list of dictionaries
     data = pd.DataFrame(df)
     # data = pd.read_csv('data.csv')
-
 
     data['release_date'] = data['release_date'].apply(str)
     data['release_date'] = data['release_date'].apply(convert_to_datetime)
@@ -32,6 +32,7 @@ def create_data():
     # Đóng kết nối
     client.close()
     return data
+
 
 def merge_data_clean(data):
     mongo_uri = f"mongodb://localhost:27017"
@@ -83,6 +84,7 @@ def merge_data_clean(data):
 
     return df_movie_genres, df_movie_country, df_movie_language, df_movie_company, df_movie_director, df_movie_star, df_movie_writer
 
+
 # Hàm chuyển đổi chuỗi thành datetime
 def convert_to_datetime(date_string):
     # Sử dụng regex để trích xuất thông tin ngày tháng năm
@@ -95,7 +97,6 @@ def convert_to_datetime(date_string):
         return pd.to_datetime(date_part, format='%B %d, %Y')
     else:
         return None
-
 
 
 # Tạo DataFrame từ list of dictionaries
@@ -118,10 +119,13 @@ data_load_state = st.text('Loading data...')
 data = create_data()
 # Notify the reader that the data was successfully loaded.
 data_load_state.text('Loading data...done!')
-df_movie_genres, df_movie_country, df_movie_language, df_movie_company, df_movie_director, df_movie_star, df_movie_writer = merge_data_clean(data)
+df_movie_genres, df_movie_country, df_movie_language, df_movie_company, df_movie_director, df_movie_star, df_movie_writer = merge_data_clean(
+    data)
+
 
 # So luong phim
-def card_metric(df, df_movie_genres, df_movie_country, df_movie_language, df_movie_company, df_movie_director, df_movie_star, df_movie_writer):
+def card_metric(df, df_movie_genres, df_movie_country, df_movie_language, df_movie_company, df_movie_director,
+                df_movie_star, df_movie_writer):
     col1, col2, col3 = st.columns(3)
     movie_count = df.shape[0]
     director_count = df_movie_director['id'].unique().shape[0]
@@ -142,10 +146,11 @@ def card_metric(df, df_movie_genres, df_movie_country, df_movie_language, df_mov
 
     style_metric_cards()
 
+
 st.subheader("Dữ liệu được crawl từ IMDb")
 st.write(data.head(5))
-card_metric(data, df_movie_genres, df_movie_country, df_movie_language, df_movie_company, df_movie_director, df_movie_star, df_movie_writer)
-
+card_metric(data, df_movie_genres, df_movie_country, df_movie_language, df_movie_company, df_movie_director,
+            df_movie_star, df_movie_writer)
 
 # Số lượng phim theo doanh thu
 
@@ -157,7 +162,7 @@ df_2 = pd.DataFrame({'revenue': ['0.0', 'Others'], 'num_of_films': [a, b]})
 st.bar_chart(df_2, x='revenue', y='num_of_films')
 
 ratio_budget_revenue = data[(data['budget'] != 0) & (data['revenue'] != 0)]
-ratio_budget_revenue['ratio(%)'] = ratio_budget_revenue['revenue']*100.0 / ratio_budget_revenue['budget'] - 100
+ratio_budget_revenue['ratio(%)'] = ratio_budget_revenue['revenue'] * 100.0 / ratio_budget_revenue['budget'] - 100
 ratio_budget_revenue['ratio(%)'] = ratio_budget_revenue['ratio(%)']
 col1, col2 = st.columns(2)
 with col1:
@@ -174,16 +179,15 @@ st.write(
     "==>  Dữ liệu crawl IMDb không sạch, có nhiều phim có ngân sách và doanh thu bằng 1-2$, nên ta sẽ loại bỏ các phim này trước khi đưa vào mô hình.")
 
 st.subheader('Bộ data sau khi loại bỏ các phim có ngân sách và doanh thu không chính xác')
-#drop phim có doanh thu = 0
+# drop phim có doanh thu = 0
 data = data[(data['revenue'] != 0.0) & (data['budget'] != 0.0)]
 data = data[(data['revenue'] >= 10000) & (data['budget'] >= 10000)]
 
-df_movie_genres, df_movie_country, df_movie_language, df_movie_company, df_movie_director, df_movie_star, df_movie_writer = merge_data_clean(data)
+df_movie_genres, df_movie_country, df_movie_language, df_movie_company, df_movie_director, df_movie_star, df_movie_writer = merge_data_clean(
+    data)
 
-card_metric(data, df_movie_genres, df_movie_country, df_movie_language, df_movie_company, df_movie_director, df_movie_star, df_movie_writer)
-
-
-
+card_metric(data, df_movie_genres, df_movie_country, df_movie_language, df_movie_company, df_movie_director,
+            df_movie_star, df_movie_writer)
 
 ## dim table
 
@@ -197,7 +201,6 @@ with col1:
     option = st.selectbox(
         'Đơn vị thời gian',
         ('Month', 'Quarter', 'Year'))
-
 
 if option == 'Month':
     df_1 = data.groupby(data['release_date'].dt.month).agg(
@@ -222,7 +225,7 @@ df = df_movie_genres.groupby('name').agg(
     num_of_films=('imdb_id', 'count')).reset_index()
 
 fig, ax = plt.subplots()
-ax.pie(df['num_of_films'], labels=df['name'], autopct=lambda p: '{:.1f}%'.format(p) if p >= 5 else '',)
+ax.pie(df['num_of_films'], labels=df['name'], autopct=lambda p: '{:.1f}%'.format(p) if p >= 5 else '', )
 # ax.barh(df['name'], df['num_of_films'])
 st.pyplot(fig)
 
@@ -258,21 +261,36 @@ axs2.hist(np.log(dist2), bins=n_bins, label='Revenue')
 top5_budget = data[data['budget'] != 0].sort_values(by='budget', ascending=False).head(5)
 top5_revenue = data[data['revenue'] != 0].sort_values(by='revenue', ascending=False).head(5)
 
+top5_star_revenue = df_movie_star.groupby('name').agg(
+    sum_of_revenue=('revenue', 'sum')).reset_index().sort_values(by='sum_of_revenue', ascending=False).head(5)
+
+top5_director_revenue = df_movie_director.groupby('name').agg(
+    sum_of_revenue=('revenue', 'sum')).reset_index().sort_values(by='sum_of_revenue', ascending=False).head(5)
 
 col1, col2 = st.columns(2)
 with col1:
     st.write("Top 5 phim có ngân sách cao nhất")
     st.write(top5_budget[['originalTitle', 'budget']])
+    st.write("Top 5 diễn viên có doanh thu cao nhất")
+    fig_star, ax_star = plt.subplots()
+    ax_star.barh(top5_star_revenue['name'], top5_star_revenue['sum_of_revenue'],
+                 label='Revenue', color='blue', height=0.5, align='center')
+    ax_star.legend()
+    st.pyplot(fig_star)
     st.write("Biểu đồ histogram ngân sách (log(budget))")
     st.pyplot(fig1)
-
 
 with col2:
     st.write("Top 5 phim có doanh thu cao nhất")
     st.write(top5_revenue[['originalTitle', 'revenue']])
+    st.write("Top 5 diễn viên có doanh thu cao nhất")
+    fig_dir, ax_dir = plt.subplots()
+    ax_dir.barh(top5_director_revenue['name'], top5_director_revenue['sum_of_revenue'],
+            label='Revenue', color='blue', height=0.5, align='center')
+    ax_dir.legend()
+    st.pyplot(fig_dir)
     st.write("Biểu đồ histogram doanh thu (log(revenue))")
     st.pyplot(fig2)
-
 
 st.subheader('Phân bổ số lượng phim theo thời gian bộ phim')
 df = data[data['runtimeMinutes'] != 0.0]
@@ -292,4 +310,3 @@ axs.boxplot([np.log(df1), np.log(df2), np.log(df3), np.log(df4), np.log(df5)],
             vert=True)
 
 st.pyplot(fig)
-
