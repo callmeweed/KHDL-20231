@@ -97,7 +97,7 @@ if __name__ == "__main__":
     # anot = pd.read_csv("concated_anot.csv").sample(frac=1, random_state=0).reset_index(drop=True)
     df = preprocess()
     df = df.sample(frac=1, random_state=0).reset_index(drop=True)
-    dataset = CustomDataset(df[:-5000], features_config)
+    dataset = CustomDataset(df[:-1000], features_config)
     dataloader = DataLoader(dataset=dataset, batch_size=64, shuffle=False, generator=torch.Generator(device="cpu"))
 
 
