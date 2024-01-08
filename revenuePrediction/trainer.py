@@ -96,9 +96,9 @@ if __name__ == "__main__":
     # anot = pd.read_csv("concated_anot.csv").sample(frac=1, random_state=0).reset_index(drop=True)
     df = preprocess()
     df = df.sample(frac=1, random_state=0).reset_index(drop=True)
-    traindataset = CustomDataset(df[:-5000], features_config)
+    traindataset = CustomDataset(df[-3000:-2000], features_config)
     trainloader = DataLoader(dataset=traindataset, batch_size=64, shuffle=True, generator=torch.Generator(device="cpu"))
-    valdataset = CustomDataset(df[-5000:], features_config)
+    valdataset = CustomDataset(df[-2000:-1000], features_config)
     valloader = DataLoader(dataset=valdataset, batch_size=64, shuffle=False, generator=torch.Generator(device="cpu"))
 
     #optimizer
